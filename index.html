@@ -259,11 +259,11 @@
       <div class="title">(주)대한상사</div>
       <div class="subtitle">도자기,유리,잡화,락앤락,코맥스,업소용 서울·경기 총판</div>
 
-      <div class="actions">
-        <a class="btn primary" href="contact.html">
+         <button class="btn" id="openContact" type="button">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-</svg>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+
           연락처 저장
         </a>
 
@@ -393,6 +393,25 @@
       else alert("복사에 실패했습니다. 길게 눌러 복사해주세요.");
     });
 
+     <!-- 연락처 저장 모달 (QR) -->
+  <div class="modal" id="contactModal" aria-hidden="true">
+    <div class="modal-bg" id="closeContact"></div>
+
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="연락처 저장">
+      <h3>연락처 저장</h3>
+
+      <div class="qr-wrap">
+        <img class="qr-img" src="./contact_qr.png" alt="(주)대한상사 연락처 QR" loading="lazy" decoding="async" />
+        <p class="qr-hint">카메라로 QR을 스캔하면<br><b>연락처 추가</b> 화면이 뜹니다.</p>
+        <p class="qr-hint">아이폰은 QR을 <b>스크린샷 → 사진 앱</b>에서<br>바로 인식할 수 있어요.</p>
+        <p class="qr-hint">※ 화면이 안 뜨면, 카메라 앱에서<br>QR 링크(연락처 추가)를 눌러주세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="navModal" aria-hidden="true">
+    <div class="modal-bg" id="closeNav"></div>
+  
     // ===== 오시는 길 모달 =====
     const modal = document.getElementById("navModal");
     document.getElementById("openNav").addEventListener("click", () => {
