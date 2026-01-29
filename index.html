@@ -1,240 +1,433 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="format-detection" content="telephone=no" />
-<meta name="google" content="notranslate" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="google" content="notranslate" />
 
-<meta property="og:locale" content="ko_KR" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="(주)대한상사" />
-<meta property="og:description" content="연락처 저장 · 계좌 복사 · 오시는 길" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="(주)대한상사" />
+  <meta property="og:description" content="연락처 저장 · 계좌 복사 · 오시는 길" />
 
-<title>(주)대한상사</title>
+  <title>(주)대한상사</title>
 
-<!-- Kakao SDK -->
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
-  integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
-  crossorigin="anonymous"></script>
-<script>
-  Kakao.init("61e60e2a10a44ac8e3201db62542c480");
-</script>
+  <!-- Kakao SDK (카카오내비) -->
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
+    integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
+    crossorigin="anonymous"></script>
+  <script>
+    // ⚠️ Kakao Developers > 플랫폼(Web) > 사이트 도메인에 아래 도메인이 등록되어 있어야 동작합니다.
+    // https://kitchenware-ko.github.io
+    try {
+      if (window.Kakao && !Kakao.isInitialized()) Kakao.init("61e60e2a10a44ac8e3201db62542c480");
+    } catch (e) {}
+  </script>
 
-<style>
-:root{
-  --bg:#ffffff;
-  --text:#0f172a;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --shadow:0 14px 44px rgba(0,0,0,.1);
-  --radius:26px;
-  --btn-radius:18px;
-  --maxw:560px;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-.wrap{
-  min-height:100svh;
-  display:grid;
-  place-items:center;
-  padding:22px;
-}
-.card{
-  width:min(var(--maxw),100%);
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:22px;
-  text-align:center;
-}
-.brand img{
-  max-width:160px;
-  width:100%;
-  margin-bottom:6px;
-}
-.brand h1{
-  margin:4px 0 2px;
-  font-size:28px;
-  font-weight:900;
-}
-.brand p{
-  margin:0;
-  font-size:14px;
-  color:var(--muted);
-  font-weight:700;
-}
-.actions{
-  display:grid;
-  gap:12px;
-  margin:18px 0;
-}
-.btn{
-  height:56px;
-  border-radius:var(--btn-radius);
-  border:1px solid var(--border);
-  font-size:16px;
-  font-weight:900;
-  cursor:pointer;
-  background:#f9fafb;
-}
-.btn.primary{
-  background:linear-gradient(180deg,#111827,#020617);
-  color:#fff;
-  border:none;
-}
-.info{
-  border-top:1px solid var(--border);
-  padding-top:14px;
-  font-size:14px;
-}
-.row{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-}
-.row span:first-child{
-  color:var(--muted);
-  font-weight:700;
-}
-.row span:last-child{
-  font-weight:800;
-}
-.footer{
-  margin-top:14px;
-  font-size:11px;
-  color:#9ca3af;
-}
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow:0 14px 44px rgba(0,0,0,.10);
+      --radius:26px;
+      --btn-radius:18px;
+      --maxw:560px;
+    }
 
-/* 모달 */
-.modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  z-index:50;
-}
-.modal.show{display:block}
-.modal-bg{
-  position:absolute;
-  inset:0;
-  background:rgba(2,6,23,.55);
-}
-.modal-box{
-  position:absolute;
-  left:50%;
-  bottom:16px;
-  transform:translateX(-50%);
-  width:min(var(--maxw),calc(100% - 24px));
-  background:#fff;
-  border-radius:22px;
-  padding:16px;
-}
-.modal-box h3{
-  margin:0 0 12px;
-  font-size:16px;
-  font-weight:900;
-}
-.nav-btns{
-  display:grid;
-  gap:10px;
-}
-.nav-item{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  padding:14px;
-  border-radius:16px;
-  border:1px solid var(--border);
-  background:#f9fafb;
-  font-weight:900;
-  font-size:15px;
-  cursor:pointer;
-}
-.nav-item:active{transform:translateY(1px)}
-</style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .wrap{
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      padding:22px;
+    }
+
+    .card{
+      width:min(var(--maxw),100%);
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      text-align:center;
+    }
+
+    .brand img{
+      max-width:160px;
+      width:100%;
+      height:auto;
+      margin-bottom:6px;
+    }
+    .brand h1{
+      margin:4px 0 2px;
+      font-size:28px;
+      font-weight:900;
+    }
+    .brand p{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .actions{
+      display:grid;
+      gap:12px;
+      margin:18px 0;
+    }
+
+    /* 버튼 기본: 아이콘+텍스트 정렬 (요청하신 두번째 이미지 스타일) */
+    .btn{
+      height:56px;
+      border-radius:var(--btn-radius);
+      border:1px solid var(--border);
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      background:#f9fafb;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
+      color:inherit;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .btn:active{ transform:translateY(1px); }
+
+    .btn.primary{
+      background:linear-gradient(180deg,#111827,#020617);
+      color:#fff;
+      border:none;
+    }
+
+    .ico{
+      width:18px;
+      height:18px;
+      display:block;
+      flex:0 0 auto;
+    }
+
+    .info{
+      border-top:1px solid var(--border);
+      padding-top:14px;
+      font-size:14px;
+      text-align:left;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      padding:8px 0;
+      gap:16px;
+    }
+
+    .row span:first-child{
+      color:var(--muted);
+      font-weight:700;
+      min-width:52px;
+    }
+
+    .row span:last-child{
+      font-weight:800;
+      text-align:right;
+      word-break:keep-all;
+    }
+
+    .row a{ color:inherit; text-decoration:underline; text-underline-offset:3px; }
+
+    .footer{
+      margin-top:14px;
+      font-size:11px;
+      color:#9ca3af;
+    }
+
+    /* 모달 */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      z-index:50;
+    }
+    .modal.show{display:block}
+    .modal-bg{
+      position:absolute;
+      inset:0;
+      background:rgba(2,6,23,.55);
+    }
+    .modal-box{
+      position:absolute;
+      left:50%;
+      bottom:16px;
+      transform:translateX(-50%);
+      width:min(var(--maxw),calc(100% - 24px));
+      background:#fff;
+      border-radius:22px;
+      padding:16px;
+      border:1px solid var(--border);
+      box-shadow:0 18px 60px rgba(0,0,0,.18);
+    }
+    .modal-box h3{
+      margin:0 0 12px;
+      font-size:16px;
+      font-weight:900;
+      text-align:left;
+    }
+
+    .nav-btns{ display:grid; gap:10px; }
+    .nav-item{
+      height:54px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:#f9fafb;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
+      color:inherit;
+    }
+    .nav-item:active{ transform:translateY(1px); }
+
+    /* 토스트 */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:#111827;
+      color:#fff;
+      padding:10px 16px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .toast.show{opacity:1}
+  
+    .app-hint{
+      margin:4px 0 0;
+      font-size:12px;
+      color:#6b7280;
+      line-height:1.45;
+      text-align:center;
+    }
+
+  </style>
 </head>
 
 <body>
-<main class="wrap">
-<section class="card">
+  <main class="wrap">
+    <section class="card">
+      <div class="brand">
+        <img src="https://kitchenware-ko.github.io/pay/300x.png" alt="대한상사 로고" />
+        <h1>(주)대한상사</h1>
+        <p>업소용의 모든 것</p>
+      </div>
 
-  <div class="brand">
-    <img src="https://kitchenware-ko.github.io/pay/300x.png" alt="대한상사 로고">
-    <h1>(주)대한상사</h1>
-    <p>업소용의 모든 것</p>
-  </div>
+      <div class="actions">
+        <!-- 연락처 저장: 아이콘 + 텍스트 정렬 -->
+        <a class="btn primary" href="./daehan.vcf" id="saveContactBtn">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          연락처 저장
+        </a>
 
-  <div class="actions">
-    <a class="btn primary" href="./daehan.vcf">📇 연락처 저장</a>
-    <button class="btn" id="copyBtn">📋 계좌번호 복사</button>
-    <button class="btn" id="openNav">📍 오시는 길</button>
-  </div>
+        <button class="btn" id="copyBtn" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          계좌번호 복사
+        </button>
 
-  <div class="info">
-    <div class="row"><span>전화</span><span>02-2617-9654</span></div>
-    <div class="row"><span>휴대폰</span><span>010-4993-9655</span></div>
-    <div class="row"><span>이메일</span><span>daehan5211@naver.com</span></div>
-    <div class="row"><span>주소</span><span>경기도 광명시 사들로 45-6</span></div>
-  </div>
+        <button class="btn" id="openNav" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          오시는 길
+        </button>
 
-  <div class="footer">
-    QR 하나로 연락처 저장 · 계좌 복사 · 길 안내
-  </div>
+        <a class="btn" id="homeBtn" href="https://www.daehancorporation.co.kr/" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 10.5 12 3l9 7.5"></path>
+            <path d="M5 10v10h14V10"></path>
+          </svg>
+          홈페이지 바로가기
+        </a>
 
-</section>
-</main>
+        <button class="btn" id="appBtn" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6" y="2" width="12" height="20" rx="3"></rect>
+            <path d="M11 18h2"></path>
+          </svg>
+          앱 열기
+        </button>
 
-<!-- 오시는 길 모달 -->
-<div class="modal" id="navModal">
-  <div class="modal-bg" id="closeNav"></div>
-  <div class="modal-box">
-    <h3>오시는 길</h3>
-    <div class="nav-btns">
-      <a class="nav-item" href="https://tmap.life/0b2a1271" target="_blank">티맵</a>
-      <button class="nav-item" id="kakaoNaviBtn">카카오내비</button>
-      <a class="nav-item" href="https://naver.me/5L7TWyLK" target="_blank">네이버지도</a>
+        <p class="app-hint">
+          카카오톡에서 앱이 바로 열리지 않으면<br>
+          우측 상단 <b>⋯</b> → <b>기본 브라우저로 열기</b>를 눌러주세요.
+        </p>
+      </div>
+
+      <div class="info">
+        <div class="row"><span>전화</span><span><a href="tel:0226179654">02-2617-9654</a></span></div>
+        <div class="row"><span>팩스</span><span><a href="tel:0226859659">02-2685-9659</a></span></div>
+        <div class="row"><span>이메일</span><span><a href="mailto:daehan5211@naver.com">daehan5211@naver.com</a></span></div>
+        <div class="row"><span>주소</span><span>경기도 광명시 사들로 45-6</span></div>
+      </div>
+
+      <div class="footer">감사합니다</div>
+    </section>
+  </main>
+
+  <!-- 오시는 길 모달 -->
+  <div class="modal" id="navModal" aria-hidden="true">
+    <div class="modal-bg" id="closeNav"></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="오시는 길 선택">
+      <h3>오시는 길</h3>
+      <div class="nav-btns">
+        <a class="nav-item" href="https://tmap.life/0b2a1271" target="_blank" rel="noopener">티맵</a>
+
+        <!-- 카카오내비: SDK로 앱 실행 시도 + 실패하면 카카오맵 웹으로 폴백 -->
+        <button class="nav-item" id="kakaoNaviBtn" type="button">카카오내비</button>
+
+        <a class="nav-item" href="https://naver.me/5L7TWyLK" target="_blank" rel="noopener">네이버지도</a>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-/* 계좌 복사 */
-const acct = "국민은행 662601-04-035762\n(주)대한상사";
-document.getElementById("copyBtn").onclick = () => {
-  navigator.clipboard.writeText(acct);
-  alert("계좌번호가 복사되었습니다");
-};
+  <div class="toast" id="toast">복사되었습니다</div>
 
-/* 모달 */
-const modal = document.getElementById("navModal");
-document.getElementById("openNav").onclick = () => modal.classList.add("show");
-document.getElementById("closeNav").onclick = () => modal.classList.remove("show");
+  <script>
+    // 계좌 복사
+    const acct = "국민은행 662601-04-035762\n(주)대한상사";
+    const toast = document.getElementById("toast");
 
-/* 카카오내비 실행 (좌표 기반) */
-const KAKAO_DEST = {61e60e2a10a44ac8e3201db62542c480
-  name: "(주)대한상사",
-  x: 126.842331500265, // 경도
-  y: 37.435743278515,  // 위도
-  coordType: "wgs84",
-};
+    function showToast(msg) {
+      toast.textContent = msg || "복사되었습니다";
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1400);
+    }
 
-document.getElementById("kakaoNaviBtn").onclick = () => {
-  Kakao.Navi.start({
-    name: KAKAO_DEST.name,
-    x: KAKAO_DEST.x,
-    y: KAKAO_DEST.y,
-    coordType: KAKAO_DEST.coordType,
-  });
-};
-</script>
+    document.getElementById("copyBtn").onclick = async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(acct);
+        } else {
+          const ta=document.createElement("textarea");
+          ta.value=acct;
+          ta.style.position="fixed";
+          ta.style.top="-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        showToast("계좌번호가 복사되었습니다");
+      } catch(e) {
+        alert("복사에 실패했습니다. 길게 눌러 복사해주세요.");
+      }
+    };
 
+    // 모달
+    const modal = document.getElementById("navModal");
+    document.getElementById("openNav").onclick = () => {
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden","false");
+    };
+    document.getElementById("closeNav").onclick = () => {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden","true");
+    };
+
+    // 카카오내비 실행 (x=경도, y=위도)
+    const KAKAO_DEST = {
+      name: "(주)대한상사",
+      x: 126.842331500265,
+      y: 37.435743278515,
+      coordType: "wgs84"
+    };
+
+    const KAKAO_WEB_FALLBACK = "https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EA%B4%91%EB%AA%85%EC%8B%9C%20%EC%82%AC%EB%93%A4%EB%A1%9C%2045-6";
+
+    document.getElementById("kakaoNaviBtn").onclick = () => {
+      try {
+        if (!window.Kakao) throw new Error("Kakao SDK not loaded");
+        if (!Kakao.isInitialized()) Kakao.init("61e60e2a10a44ac8e3201db62542c480");
+
+        // 1) 카카오내비 앱 실행 시도
+        Kakao.Navi.start({
+          name: KAKAO_DEST.name,
+          x: KAKAO_DEST.x,
+          y: KAKAO_DEST.y,
+          coordType: KAKAO_DEST.coordType
+        });
+
+        // 2) 인앱브라우저 등에서 앱 호출이 막히면 웹으로 폴백
+        setTimeout(() => {
+          if (document.visibilityState === "visible") {
+            window.location.href = KAKAO_WEB_FALLBACK;
+          }
+        }, 1200);
+      } catch(e) {
+        window.location.href = KAKAO_WEB_FALLBACK;
+      }
+    };
+  
+
+    // 앱 열기 (설치돼 있으면 앱 실행 시도 → 없으면 Play 스토어)
+    const PLAY_URL = "https://play.google.com/store/apps/details?id=com.daehan.b2cmall";
+    const PACKAGE = "com.daehan.b2cmall";
+    // Android Chrome/대부분 브라우저: intent 링크가 설치 시 앱 실행, 미설치 시 fallback_url로 이동
+    const ANDROID_INTENT = "intent://open#Intent;package=" + PACKAGE + ";S.browser_fallback_url=" + encodeURIComponent(PLAY_URL) + ";end";
+    const MARKET_URL = "market://details?id=" + PACKAGE;
+
+    function isAndroid() {
+      return /Android/i.test(navigator.userAgent);
+    }
+
+    document.getElementById("appBtn").onclick = () => {
+      if (isAndroid()) {
+        // 1) intent 시도
+        window.location.href = ANDROID_INTENT;
+
+        // 2) intent가 막히거나 동작 안 하면 스토어로 폴백
+        setTimeout(() => {
+          if (document.visibilityState === "visible") {
+            window.location.href = MARKET_URL;
+            setTimeout(() => window.location.href = PLAY_URL, 600);
+          }
+        }, 700);
+      } else {
+        // iPhone/PC 등: Android 앱 스토어 링크로 이동
+        window.location.href = PLAY_URL;
+      }
+    };
+
+  </script>
 </body>
 </html>
-
