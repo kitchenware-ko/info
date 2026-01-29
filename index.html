@@ -93,24 +93,32 @@ body{
   border-radius:22px;
   padding:16px;
 }
-.modal-box h3{margin:0 0 12px;font-size:16px;font-weight:900;text-align:left}
+.modal-box h3{
+  margin:0 0 12px;
+  font-size:16px;
+  font-weight:900;
+  text-align:left;
+}
 
-.nav-list{display:grid;gap:10px}
-.nav-btn{
+/* 지도 버튼 영역 */
+.btns{
+  display:grid;
+  gap:10px;
+}
+.btns .btn{
   height:54px;
   border-radius:16px;
-  border:1px solid var(--border);
-  background:#f9fafb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-weight:900;
-  text-decoration:none;
-  color:inherit;
-  cursor:pointer;
 }
-.nav-btn img{width:26px;height:26px;object-fit:contain}
+.logo{
+  width:26px;
+  height:26px;
+  object-fit:contain;
+}
+.logo-fallback{
+  width:26px;
+  height:26px;
+  display:none;
+}
 
 .toast{
   position:fixed;
@@ -155,18 +163,30 @@ body{
   <div class="modal-box">
     <h3>오시는 길</h3>
 
-    <div class="nav-list">
-      <a class="nav-btn" href="https://tmap.life/0b2a1271" target="_blank">
-        <img src="https://kitchenware-ko.github.io/info/tmap.png">티맵
+    <div class="btns" role="list">
+      <!-- 티맵 -->
+      <a class="btn" role="listitem"
+         href="https://tmap.life/0b2a1271"
+         target="_blank" rel="noopener">
+        <img class="logo" src="https://kitchenware-ko.github.io/info/tmap.png" alt="티맵 로고" loading="lazy" decoding="async" />
+        <span>티맵</span>
+        <span class="logo-fallback" aria-hidden="true"></span>
       </a>
 
-      <!-- 카카오만 SDK 실행 -->
-      <button class="nav-btn" id="kakaoBtn">
-        <img src="https://kitchenware-ko.github.io/info/kakaomap.png">카카오내비
+      <!-- 카카오내비 (SDK 실행) -->
+      <button class="btn" role="listitem" id="kakaoBtn" type="button">
+        <img class="logo" src="https://kitchenware-ko.github.io/info/kakaomap.png" alt="카카오내비 로고" loading="lazy" decoding="async" />
+        <span>카카오내비</span>
+        <span class="logo-fallback" aria-hidden="true"></span>
       </button>
 
-      <a class="nav-btn" href="https://naver.me/5L7TWyLK" target="_blank">
-        <img src="https://kitchenware-ko.github.io/info/navermap.png">네이버지도
+      <!-- 네이버지도 -->
+      <a class="btn" role="listitem"
+         href="https://naver.me/5L7TWyLK"
+         target="_blank" rel="noopener">
+        <img class="logo" src="https://kitchenware-ko.github.io/info/navermap.png" alt="네이버지도 로고" loading="lazy" decoding="async" />
+        <span>네이버지도</span>
+        <span class="logo-fallback" aria-hidden="true"></span>
       </a>
     </div>
   </div>
@@ -175,6 +195,7 @@ body{
 <div class="toast" id="toast">복사되었습니다</div>
 
 <script>
+/* 계좌 복사 */
 const acct = "국민은행 662601-04-035762\n(주)대한상사";
 const toast = document.getElementById("toast");
 
@@ -184,11 +205,12 @@ document.getElementById("copyBtn").onclick = async () => {
   setTimeout(()=>toast.classList.remove("show"),1400);
 };
 
+/* 모달 */
 const modal = document.getElementById("navModal");
 document.getElementById("openNav").onclick = () => modal.classList.add("show");
 document.getElementById("closeNav").onclick = () => modal.classList.remove("show");
 
-// 카카오내비 실행 + 폴백
+/* 카카오내비 SDK 실행 + 폴백 */
 document.getElementById("kakaoBtn").onclick = () => {
   try{
     Kakao.Navi.start({
