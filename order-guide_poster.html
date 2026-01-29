@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="google" content="notranslate" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="온라인 주문방법" />
+  <meta property="og:description" content="자사몰에서 장바구니 담기 → 주문하기 → 결제 → 배송 메모 남기기" />
+  <title>온라인 주문방법</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --ink:#0f172a;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow:0 18px 60px rgba(0,0,0,.10);
+      --radius:26px;
+      --accent:#0b1220;
+      --orange:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    .wrap{
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      padding:20px;
+    }
+    .sheet{
+      width:min(640px,100%);
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px 18px 18px;
+      text-align:center;
+    }
+    .brand{
+      display:flex;
+      justify-content:center;
+      margin:4px 0 10px;
+    }
+    .brand img{
+      width:min(220px,70%);
+      height:auto;
+      display:block;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      color:inherit;
+      font-weight:900;
+      margin:2px 0 8px;
+      justify-content:center;
+    }
+    .back svg{ width:18px; height:18px; }
+
+    .headline{
+      margin:8px 0 12px;
+      font-size:34px;
+      font-weight:900;
+      letter-spacing:-0.03em;
+      line-height:1.2;
+    }
+    .subline{
+      margin:0 0 14px;
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:-0.02em;
+      line-height:1.5;
+      color:var(--muted);
+    }
+
+    .bullets{
+      text-align:left;
+      margin:14px auto 8px;
+      padding:0 10px;
+      max-width:560px;
+    }
+    .bullet{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 0;
+      border-bottom:1px solid var(--border);
+    }
+    .bullet:last-child{ border-bottom:none; }
+    .dot{
+      width:10px; height:10px;
+      border-radius:999px;
+      background:var(--ink);
+      margin-top:6px;
+      flex:0 0 auto;
+    }
+    .btxt{
+      font-size:17px;
+      font-weight:900;
+      line-height:1.55;
+      letter-spacing:-0.01em;
+    }
+    .btxt small{
+      display:block;
+      margin-top:4px;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+    }
+    .linklike{
+      color:inherit;
+      text-decoration:underline;
+      text-underline-offset:4px;
+    }
+
+    .box{
+      margin:14px auto 10px;
+      max-width:560px;
+      border:2px solid rgba(245,158,11,.55);
+      border-radius:22px;
+      padding:14px 14px 12px;
+      text-align:left;
+      background:rgba(245,158,11,.08);
+    }
+    .box h3{
+      margin:0 0 10px;
+      font-size:16px;
+      font-weight:1000;
+      letter-spacing:-0.02em;
+    }
+    .fees{
+      display:grid;
+      gap:10px;
+    }
+    .fee{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px 12px;
+    }
+    .fee .label{
+      font-size:14px;
+      font-weight:1000;
+      color:var(--orange);
+      margin-bottom:4px;
+    }
+    .fee .val{
+      font-size:15px;
+      font-weight:950;
+      line-height:1.4;
+    }
+
+    .actions{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+    .btn{
+      width:100%;
+      height:56px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:16px;
+      font-weight:900;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      cursor:pointer;
+      text-decoration:none;
+      color:inherit;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .btn:active{ transform:translateY(1px); }
+    .btn.primary{
+      border:none;
+      color:#fff;
+      background:linear-gradient(180deg,var(--accent) 0%,#020617 100%);
+    }
+    .ico{ width:18px; height:18px; flex:0 0 auto; }
+
+    .tip{
+      margin-top:10px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    @media (max-width:420px){
+      .headline{ font-size:28px; }
+      .btxt{ font-size:16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="sheet" aria-label="온라인 주문방법">
+      <div class="brand">
+        <img src="https://kitchenware-ko.github.io/info/300x.png" alt="DAEHAN CORPORATION 로고" />
+      </div>
+
+      <a class="back" href="./">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        메인으로
+      </a>
+
+      <div class="headline">온라인 주문방법</div>
+      <div class="subline">
+        자사몰에서 간단하게 주문할 수 있어요. <br>
+        (모바일/PC 모두 가능)
+      </div>
+
+      <div class="bullets" role="list">
+        <div class="bullet" role="listitem">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="btxt">
+            도매몰 접속
+            <small><span class="linklike">www.daehancorporation.co.kr</span></small>
+          </div>
+        </div>
+
+        <div class="bullet" role="listitem">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="btxt">장바구니에 상품 담기</div>
+        </div>
+
+        <div class="bullet" role="listitem">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="btxt">주문하기 버튼 누르기</div>
+        </div>
+
+        <div class="bullet" role="listitem">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="btxt">후불결제 선택하기</div>
+        </div>
+
+        <div class="bullet" role="listitem">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="btxt">
+            배송 관련 메모 남기기
+            <small>방문 / 택배 / 배송 중 선택</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" aria-label="배송 안내">
+        <h3>배송 기준 안내</h3>
+        <div class="fees">
+          <div class="fee">
+            <div class="label">택배</div>
+            <div class="val">전 지역 150,000원 이상~</div>
+          </div>
+          <div class="fee">
+            <div class="label">배송</div>
+            <div class="val">
+              경기·서울: 130만원 이상~<br>
+              그 외 지방: 150만원 이상~
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="https://www.daehancorporation.co.kr/shop/" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 6h15l-1.5 9h-12z"/>
+            <path d="M6 6l-2 0"/>
+            <circle cx="9" cy="20" r="1"/>
+            <circle cx="18" cy="20" r="1"/>
+          </svg>
+          자사몰 바로가기
+        </a>
+
+        <button class="btn" id="copyMemo" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          배송 메모 예시 복사
+        </button>
+      </div>
+
+      <div class="tip">
+        카카오톡/인앱 브라우저에서 링크가 잘 안 열리면<br>
+        우측 상단 <b>⋯</b> → <b>기본 브라우저로 열기</b>를 눌러주세요.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const memo =
+`[배송 메모 예시]
+배송 방식: (방문/택배/배송)
+수령인/업체명:
+연락처:
+주소:
+요청사항:`;
+
+      async function copy(text){
+        try{
+          if(navigator.clipboard && window.isSecureContext){
+            await navigator.clipboard.writeText(text);
+          }else{
+            const ta=document.createElement("textarea");
+            ta.value=text;
+            ta.style.position="fixed";
+            ta.style.top="-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+          }
+          alert("배송 메모 예시를 복사했습니다. 주문 시 메모란에 붙여넣기 하세요.");
+        }catch(e){
+          alert("복사에 실패했습니다. 길게 눌러 복사해주세요.");
+        }
+      }
+
+      document.getElementById("copyMemo").addEventListener("click", () => copy(memo));
+    })();
+  </script>
+</body>
+</html>
