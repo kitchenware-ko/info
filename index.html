@@ -12,7 +12,7 @@
   <title>(주)대한상사</title>
 
   <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
-    integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
+    integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7ePUpl7e7RJCxKCwwnfqUAdXh53p"
     crossorigin="anonymous"></script>
   <script>
     try {
@@ -181,19 +181,19 @@
 
     .btns{ display:grid; gap:10px; }
     .btns .btn{
-  height:54px;
-  border-radius:16px;
-  background:#f9fafb;
-  font-weight:700 !important;
-}
-/* button 기본 스타일(볼드/폰트) 제거 */
-.btns button.btn{
-  font: inherit;
-  font-weight:700 !important;
-}
-.btns .btn span{
-  font-weight:inherit !important;
-}
+      height:54px;
+      border-radius:16px;
+      background:#f9fafb;
+      font-weight:700 !important;
+    }
+    /* button 기본 스타일(볼드/폰트) 제거 */
+    .btns button.btn{
+      font: inherit;
+      font-weight:700 !important;
+    }
+    .btns .btn span{
+      font-weight:inherit !important;
+    }
     .logo{ width:26px; height:26px; object-fit:contain; }
     .logo-fallback{ width:26px; height:26px; display:none; }
 
@@ -212,27 +212,38 @@
       transition:opacity .2s ease;
     }
     .toast.show{ opacity:1; }
-  
-/* 홈페이지 바로가기 버튼만 튀는 현상 보정 */
-a.btn[href*="daehancorporation"]{
-  font-weight:800 !important;
-}
 
+    /* 홈페이지 바로가기 버튼만 튀는 현상 보정 */
+    a.btn[href*="daehancorporation"]{ font-weight:800 !important; }
 
-/* 버튼 텍스트 굵기 100% 통일( a / button 혼용 이슈 제거 ) */
-.btn{
-  font: inherit;
-  font-weight:800 !important;
-}
-.btn span{
-  font-weight:inherit !important;
-}
-a.btn:link,
-a.btn:visited{
-  font-weight:800 !important;
-}
+    /* 버튼 텍스트 굵기 100% 통일( a / button 혼용 이슈 제거 ) */
+    .btn{ font: inherit; font-weight:800 !important; }
+    .btn span{ font-weight:inherit !important; }
+    a.btn:link, a.btn:visited{ font-weight:800 !important; }
 
-</style>
+    /* 연락처 QR 모달 */
+    .qr-wrap{
+      display:grid;
+      gap:10px;
+      justify-items:center;
+      padding:6px 0 2px;
+    }
+    .qr-img{
+      width:min(260px, 72vw);
+      height:auto;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:#fff;
+      padding:10px;
+    }
+    .qr-hint{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+      text-align:center;
+    }
+  </style>
 </head>
 
 <body>
@@ -246,38 +257,38 @@ a.btn:visited{
       <div class="subtitle">도자기,유리,잡화,락앤락,코맥스,업소용 서울·경기 총판</div>
 
       <div class="actions">
-        <a class="btn primary" href="./daehan.vcf">
+        <button class="btn primary" id="openContact" type="button">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-</svg>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
           연락처 저장
-        </a>
+        </button>
 
         <button class="btn" id="copyBtn" type="button">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-</svg>
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
           계좌번호 복사
         </button>
 
         <button class="btn" id="openNav" type="button">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/>
-</svg>
+            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
           오시는 길
         </button>
 
         <a class="btn" href="https://www.daehancorporation.co.kr/" target="_blank" rel="noopener">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/>
-</svg>
+            <path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
           홈페이지 바로가기
         </a>
 
         <button class="btn" id="appBtn" type="button">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>
-</svg>
+            <rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>
+          </svg>
           앱 열기
         </button>
 
@@ -299,6 +310,22 @@ a.btn:visited{
       <div class="footer">감사합니다</div>
     </section>
   </main>
+
+  <!-- 연락처 저장 모달 (QR) -->
+  <div class="modal" id="contactModal" aria-hidden="true">
+    <div class="modal-bg" id="closeContact"></div>
+
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="연락처 저장">
+      <h3>연락처 저장</h3>
+
+      <div class="qr-wrap">
+        <!-- ✅ 같은 폴더에 contact_qr.png 로 올려두면 됩니다 -->
+        <img class="qr-img" src="./contact_qr.png" alt="(주)대한상사 연락처 QR" loading="lazy" decoding="async" />
+        <p class="qr-hint">카메라로 QR을 스캔하면<br><b>연락처 추가</b> 화면이 뜹니다.</p>
+        <p class="qr-hint">※ 화면이 안 뜨면, 카메라 앱에서<br>QR 링크(연락처 추가)를 눌러주세요.</p>
+      </div>
+    </div>
+  </div>
 
   <div class="modal" id="navModal" aria-hidden="true">
     <div class="modal-bg" id="closeNav"></div>
@@ -331,48 +358,19 @@ a.btn:visited{
   <div class="toast" id="toast">복사되었습니다</div>
 
   <script>
-      // ===== 연락처 저장 (다운로드 대신 vCard 직접 열기 시도) =====
-    const vcardText =
-`BEGIN:VCARD
-VERSION:3.0
-N:대한상사;(주);;;
-FN:(주)대한상사
-ORG:(주)대한상사
-TEL;TYPE=WORK,VOICE:02-2617-9654
-TEL;TYPE=CELL,VOICE:010-4993-9655
-EMAIL;TYPE=INTERNET:daehan5211@naver.com
-ADR;TYPE=WORK:;;경기도 광명시 사들로 45-6;;;대한민국
-URL:https://www.daehancorporation.co.kr/
-END:VCARD`;
-
-    function openVCard() {
-      try {
-        const blob = new Blob([vcardText], { type: "text/vcard;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-
-        // iOS/Safari는 이 방식이 '연락처 추가' 화면으로 열리는 경우가 많음
-        const a = document.createElement("a");
-        a.href = url;
-        a.rel = "noopener";
-        a.style.display = "none";
-        // download 속성은 일부 앱에서 '다운로드'를 강제하므로 사용하지 않음
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-        }, 2000);
-      } catch (e) {
-        // 최후 폴백: 파일 링크로 이동
-        window.location.href = "./daehan.vcf";
-      }
-    }
-
-    document.getElementById("saveContact")?.addEventListener("click", openVCard);
-
+    // ===== 연락처 QR 모달 =====
+    const contactModal = document.getElementById("contactModal");
+    document.getElementById("openContact").addEventListener("click", () => {
+      contactModal.classList.add("show");
+      contactModal.setAttribute("aria-hidden", "false");
+    });
+    document.getElementById("closeContact").addEventListener("click", () => {
+      contactModal.classList.remove("show");
+      contactModal.setAttribute("aria-hidden", "true");
+    });
 
     // ===== 계좌 복사 =====
-    const acct = "국민은행 662601-04-035762\n(주)대한상사";
+    const acct = "국민은행 662601-04-035762\\n(주)대한상사";
     const toast = document.getElementById("toast");
 
     function showToast(msg){
@@ -408,14 +406,14 @@ END:VCARD`;
     });
 
     // ===== 오시는 길 모달 =====
-    const modal = document.getElementById("navModal");
+    const navModal = document.getElementById("navModal");
     document.getElementById("openNav").addEventListener("click", () => {
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
+      navModal.classList.add("show");
+      navModal.setAttribute("aria-hidden", "false");
     });
     document.getElementById("closeNav").addEventListener("click", () => {
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
+      navModal.classList.remove("show");
+      navModal.setAttribute("aria-hidden", "true");
     });
 
     // ===== 카카오내비 SDK 실행 + 폴백 (700ms) =====
@@ -467,6 +465,3 @@ END:VCARD`;
   </script>
 </body>
 </html>
-
-
-
