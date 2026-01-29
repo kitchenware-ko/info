@@ -1,240 +1,429 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="format-detection" content="telephone=no" />
-<meta name="google" content="notranslate" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="google" content="notranslate" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="(주)대한상사" />
+  <meta property="og:description" content="도자기,유리,잡화,락앤락,코맥스,업소용 서울·경기 총판" />
+  <title>(주)대한상사</title>
 
-<meta property="og:locale" content="ko_KR" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="(주)대한상사" />
-<meta property="og:description" content="연락처 · 계좌 · 오시는 길 · 앱 연결" />
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
+    integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
+    crossorigin="anonymous"></script>
+  <script>
+    try {
+      if (window.Kakao && !Kakao.isInitialized()) Kakao.init("61e60e2a10a44ac8e3201db62542c480");
+    } catch(e) {}
+  </script>
 
-<title>(주)대한상사</title>
-
-<!-- Kakao SDK -->
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
-  integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
-  crossorigin="anonymous"></script>
-<script>
-  try {
-    if (window.Kakao && !Kakao.isInitialized()) {
-      Kakao.init("61e60e2a10a44ac8e3201db62542c480");
+  <style>
+    :root{
+      --bg:#ffffff;
+      --card:#ffffff;
+      --border:#e5e7eb;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --shadow:0 18px 60px rgba(0,0,0,.10);
+      --radius:28px;
+      --btn-radius:18px;
+      --maxw:560px;
     }
-  } catch(e) {}
-</script>
 
-<style>
-:root{
-  --bg:#ffffff;
-  --text:#0f172a;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --shadow:0 14px 44px rgba(0,0,0,.1);
-  --radius:26px;
-  --btn-radius:18px;
-  --maxw:560px;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-.wrap{
-  min-height:100svh;
-  display:grid;
-  place-items:center;
-  padding:22px;
-}
-.card{
-  width:min(var(--maxw),100%);
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:22px;
-  text-align:center;
-}
-.brand img{max-width:160px;margin-bottom:6px}
-.brand h1{margin:4px 0 2px;font-size:28px;font-weight:900}
-.brand p{margin:0;font-size:14px;color:var(--muted);font-weight:700}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-.actions{display:grid;gap:12px;margin:18px 0}
-.btn{
-  height:56px;
-  border-radius:var(--btn-radius);
-  border:1px solid var(--border);
-  background:#f9fafb;
-  font-size:16px;
-  font-weight:900;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  cursor:pointer;
-  text-decoration:none;
-  color:inherit;
-}
-.btn.primary{background:#020617;color:#fff;border:none}
+    .wrap{
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      padding:22px;
+    }
 
-.modal{position:fixed;inset:0;display:none;z-index:50}
-.modal.show{display:block}
-.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.modal-box{
-  position:absolute;
-  left:50%;
-  bottom:16px;
-  transform:translateX(-50%);
-  width:min(var(--maxw),calc(100% - 24px));
-  background:#fff;
-  border-radius:22px;
-  padding:16px;
-}
-.modal-box h3{
-  margin:0 0 12px;
-  font-size:16px;
-  font-weight:900;
-  text-align:left;
-}
+    .card{
+      width:min(var(--maxw),100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px 20px 18px;
+      text-align:center;
+    }
 
-/* 지도 버튼 영역 */
-.btns{
-  display:grid;
-  gap:10px;
-}
-.btns .btn{
+    .brand img{
+      max-width:180px;
+      width:100%;
+      height:auto;
+      margin:6px auto 2px;
+      display:block;
+    }
+
+    .title{
+      margin:6px 0 2px;
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-0.02em;
+    }
+
+    .subtitle{
+      margin:0 0 16px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .actions{ display:grid; gap:12px; }
+
+    .btn{
+      width:100%;
+      height:56px;
+      border-radius:var(--btn-radius);
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:16px;
+      font-weight:800 !important;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      cursor:pointer;
+      text-decoration:none;
+      color:inherit;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .btn:active{ transform:translateY(1px); }
+
+    .btn.primary{
+      border:none;
+      color:#fff;
+      background:linear-gradient(180deg,#0b1220 0%,#020617 100%);
+    }
+
+    .ico{ width:18px; height:18px; flex:0 0 auto; }
+
+    .app-hint{
+      margin:6px 0 2px;
+      font-size:12px;
+      color:#6b7280;
+      line-height:1.45;
+      text-align:center;
+    }
+
+    .divider{
+      margin:14px 0 10px;
+      height:1px;
+      background:var(--border);
+    }
+
+    .info{
+      font-size:14px;
+      text-align:left;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      padding:8px 0;
+    }
+
+    .key{
+      color:var(--muted);
+      font-weight:800;
+      min-width:56px;
+    }
+
+    .val{
+      font-weight:900;
+      text-align:right;
+      word-break:keep-all;
+    }
+
+    .val a{ color:inherit; text-decoration:underline; text-underline-offset:3px; }
+
+    .footer{
+      margin-top:10px;
+      font-size:11px;
+      color:#9ca3af;
+      text-align:center;
+    }
+
+    .modal{ position:fixed; inset:0; display:none; z-index:50; }
+    .modal.show{ display:block; }
+    .modal-bg{ position:absolute; inset:0; background:rgba(2,6,23,.55); }
+    .modal-box{
+      position:absolute;
+      left:50%;
+      bottom:16px;
+      transform:translateX(-50%);
+      width:min(var(--maxw),calc(100% - 24px));
+      background:#fff;
+      border-radius:22px;
+      padding:16px;
+      border:1px solid var(--border);
+      box-shadow:0 18px 60px rgba(0,0,0,.18);
+    }
+    .modal-box h3{
+      margin:0 0 12px;
+      font-size:16px;
+      font-weight:900;
+      text-align:left;
+    }
+
+    .btns{ display:grid; gap:10px; }
+    .btns .btn{
   height:54px;
   border-radius:16px;
+  background:#f9fafb;
+  font-weight:700 !important;
 }
-.logo{
-  width:26px;
-  height:26px;
-  object-fit:contain;
+/* button 기본 스타일(볼드/폰트) 제거 */
+.btns button.btn{
+  font: inherit;
+  font-weight:700 !important;
 }
-.logo-fallback{
-  width:26px;
-  height:26px;
-  display:none;
+.btns .btn span{
+  font-weight:inherit !important;
+}
+    .logo{ width:26px; height:26px; object-fit:contain; }
+    .logo-fallback{ width:26px; height:26px; display:none; }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:#111827;
+      color:#fff;
+      padding:10px 16px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .toast.show{ opacity:1; }
+  
+/* 홈페이지 바로가기 버튼만 튀는 현상 보정 */
+a.btn[href*="daehancorporation"]{
+  font-weight:800 !important;
 }
 
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  background:#111827;
-  color:#fff;
-  padding:10px 16px;
-  border-radius:999px;
-  font-size:13px;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
+
+/* ✅ 버튼 텍스트 굵기 100% 통일( a / button 혼용 이슈 제거 ) */
+.btn{
+  font: inherit;
+  font-weight:800 !important;
 }
-.toast.show{opacity:1}
+.btn span{
+  font-weight:inherit !important;
+}
+a.btn:link,
+a.btn:visited{
+  font-weight:800 !important;
+}
+
 </style>
 </head>
 
 <body>
-<main class="wrap">
-<section class="card">
+  <main class="wrap">
+    <section class="card" aria-label="(주)대한상사 안내">
+      <div class="brand">
+        <img src="https://kitchenware-ko.github.io/info/300x.png" alt="DAEHAN CORPORATION 로고" />
+      </div>
 
-  <div class="brand">
-    <img src="https://kitchenware-ko.github.io/info/300x.png" alt="대한상사 로고">
-    <h1>(주)대한상사</h1>
-    <p>도자기, 유리, 잡화, 락앤락, 코맥스, 업소용 서울•경기 총판</p>
-  </div>
+      <div class="title">(주)대한상사</div>
+      <div class="subtitle">업소용의 모든 것</div>
 
-  <div class="actions">
-    <a class="btn primary" href="./daehan.vcf">📇 연락처 저장</a>
-    <button class="btn" id="copyBtn">📋 계좌번호 복사</button>
-    <button class="btn" id="openNav">📍 오시는 길</button>
-  </div>
-<div class="info">
-    <div class="row"><span>전화</span><span>02-2617-9654</span></div>
-    <div class="row"><span>휴대폰</span><span>010-4993-9655</span></div>
-    <div class="row"><span>이메일</span><span>daehan5211@naver.com</span></div>
-    <div class="row"><span>주소</span><span>경기도 광명시 사들로 45-6</span></div>
-  </div>
-</section>
-</main>
+      <div class="actions">
+        <a class="btn primary" href="./daehan.vcf">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+</svg>
+          연락처 저장
+        </a>
 
-<!-- 오시는 길 모달 -->
-<div class="modal" id="navModal">
-  <div class="modal-bg" id="closeNav"></div>
-  <div class="modal-box">
-    <h3>오시는 길</h3>
+        <button class="btn" id="copyBtn" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+</svg>
+          계좌번호 복사
+        </button>
 
-    <div class="btns" role="list">
-      <!-- 티맵 -->
-      <a class="btn" role="listitem"
-         href="https://tmap.life/0b2a1271"
-         target="_blank" rel="noopener">
-        <img class="logo" src="https://kitchenware-ko.github.io/info/tmap.png" alt="티맵 로고" loading="lazy" decoding="async" />
-        <span>티맵</span>
-        <span class="logo-fallback" aria-hidden="true"></span>
-      </a>
+        <button class="btn" id="openNav" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/>
+</svg>
+          오시는 길
+        </button>
 
-      <!-- 카카오내비 (SDK 실행) -->
-      <button class="btn" role="listitem" id="kakaoBtn" type="button">
-        <img class="logo" src="https://kitchenware-ko.github.io/info/kakaomap.png" alt="카카오내비 로고" loading="lazy" decoding="async" />
-        <span>카카오내비</span>
-        <span class="logo-fallback" aria-hidden="true"></span>
-      </button>
+        <a class="btn" href="https://www.daehancorporation.co.kr/" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/>
+</svg>
+          홈페이지 바로가기
+        </a>
 
-      <!-- 네이버지도 -->
-      <a class="btn" role="listitem"
-         href="https://naver.me/5L7TWyLK"
-         target="_blank" rel="noopener">
-        <img class="logo" src="https://kitchenware-ko.github.io/info/navermap.png" alt="네이버지도 로고" loading="lazy" decoding="async" />
-        <span>네이버지도</span>
-        <span class="logo-fallback" aria-hidden="true"></span>
-      </a>
+        <button class="btn" id="appBtn" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>
+</svg>
+          앱 열기
+        </button>
+
+        <p class="app-hint">
+          카카오톡에서 앱이 바로 열리지 않으면<br>
+          우측 상단 <b>⋯</b> → <b>기본 브라우저로 열기</b>를 눌러주세요.
+        </p>
+      </div>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <div class="info" aria-label="연락처 정보">
+        <div class="row"><div class="key">전화</div><div class="val"><a href="tel:0226179654">02-2617-9654</a></div></div>
+        <div class="row"><div class="key">팩스</div><div class="val"><a href="tel:0226859659">02-2685-9659</a></div></div>
+        <div class="row"><div class="key">이메일</div><div class="val"><a href="mailto:daehan5211@naver.com">daehan5211@naver.com</a></div></div>
+        <div class="row"><div class="key">주소</div><div class="val">경기도 광명시 사들로 45-6</div></div>
+      </div>
+
+      <div class="footer">감사합니다</div>
+    </section>
+  </main>
+
+  <div class="modal" id="navModal" aria-hidden="true">
+    <div class="modal-bg" id="closeNav"></div>
+
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="오시는 길 선택">
+      <h3>오시는 길</h3>
+
+      <div class="btns" role="list">
+        <a class="btn" role="listitem" href="https://tmap.life/0b2a1271" target="_blank" rel="noopener">
+          <img class="logo" src="https://kitchenware-ko.github.io/info/tmap.png" alt="티맵 로고" loading="lazy" decoding="async" />
+          <span>티맵</span>
+          <span class="logo-fallback" aria-hidden="true"></span>
+        </a>
+
+        <button class="btn" role="listitem" id="kakaoBtn" type="button">
+          <img class="logo" src="https://kitchenware-ko.github.io/info/kakaomap.png" alt="카카오내비 로고" loading="lazy" decoding="async" />
+          <span>카카오내비</span>
+          <span class="logo-fallback" aria-hidden="true"></span>
+        </button>
+
+        <a class="btn" role="listitem" href="https://naver.me/5L7TWyLK" target="_blank" rel="noopener">
+          <img class="logo" src="https://kitchenware-ko.github.io/info/navermap.png" alt="네이버지도 로고" loading="lazy" decoding="async" />
+          <span>네이버지도</span>
+          <span class="logo-fallback" aria-hidden="true"></span>
+        </a>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast">복사되었습니다</div>
+  <div class="toast" id="toast">복사되었습니다</div>
 
-<script>
-/* 계좌 복사 */
-const acct = "국민은행 662601-04-035762\n(주)대한상사";
-const toast = document.getElementById("toast");
+  <script>
+    // ===== 계좌 복사 =====
+    const acct = "국민은행 662601-04-035762\n(주)대한상사";
+    const toast = document.getElementById("toast");
 
-document.getElementById("copyBtn").onclick = async () => {
-  await navigator.clipboard.writeText(acct);
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"),1400);
-};
+    function showToast(msg){
+      toast.textContent = msg || "복사되었습니다";
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1400);
+    }
 
-/* 모달 */
-const modal = document.getElementById("navModal");
-document.getElementById("openNav").onclick = () => modal.classList.add("show");
-document.getElementById("closeNav").onclick = () => modal.classList.remove("show");
-
-/* 카카오내비 SDK 실행 + 폴백 */
-document.getElementById("kakaoBtn").onclick = () => {
-  try{
-    Kakao.Navi.start({
-      name:"(주)대한상사",
-      x:126.842331500265,
-      y:37.435743278515,
-      coordType:"wgs84"
-    });
-    setTimeout(()=>{
-      if(document.visibilityState==="visible"){
-        location.href="https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EA%B4%91%EB%AA%85%EC%8B%9C%20%EC%82%AC%EB%93%A4%EB%A1%9C%2045-6";
+    async function copyText(text){
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position="fixed";
+          ta.style.top="-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        return true;
+      } catch(e) {
+        return false;
       }
-    },700);
-  }catch(e){
-    location.href="https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EA%B4%91%EB%AA%85%EC%8B%9C%20%EC%82%AC%EB%93%A4%EB%A1%9C%2045-6";
-  }
-};
-</script>
+    }
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const ok = await copyText(acct);
+      if(ok) showToast("계좌번호가 복사되었습니다");
+      else alert("복사에 실패했습니다. 길게 눌러 복사해주세요.");
+    });
+
+    // ===== 오시는 길 모달 =====
+    const modal = document.getElementById("navModal");
+    document.getElementById("openNav").addEventListener("click", () => {
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+    });
+    document.getElementById("closeNav").addEventListener("click", () => {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+    });
+
+    // ===== 카카오내비 SDK 실행 + 폴백 (700ms) =====
+    const KAKAO_FALLBACK = "https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EA%B4%91%EB%AA%85%EC%8B%9C%20%EC%82%AC%EB%93%A4%EB%A1%9C%2045-6";
+    document.getElementById("kakaoBtn").addEventListener("click", () => {
+      try {
+        if (!window.Kakao) throw new Error("Kakao SDK not loaded");
+        if (!Kakao.isInitialized()) Kakao.init("61e60e2a10a44ac8e3201db62542c480");
+
+        Kakao.Navi.start({
+          name: "(주)대한상사",
+          x: 126.842331500265,
+          y: 37.435743278515,
+          coordType: "wgs84"
+        });
+
+        setTimeout(() => {
+          if (document.visibilityState === "visible") window.location.href = KAKAO_FALLBACK;
+        }, 700);
+      } catch (e) {
+        window.location.href = KAKAO_FALLBACK;
+      }
+    });
+
+    // ===== 앱 열기 (Android intent → 스토어 폴백 700ms) =====
+    const PLAY_URL = "https://play.google.com/store/apps/details?id=com.daehan.b2cmall";
+    const PACKAGE = "com.daehan.b2cmall";
+    const ANDROID_INTENT = "intent://open#Intent;package=" + PACKAGE + ";S.browser_fallback_url=" + encodeURIComponent(PLAY_URL) + ";end";
+    const MARKET_URL = "market://details?id=" + PACKAGE;
+
+    function isAndroid(){
+      return /Android/i.test(navigator.userAgent);
+    }
+
+    document.getElementById("appBtn").addEventListener("click", () => {
+      if (isAndroid()) {
+        window.location.href = ANDROID_INTENT;
+
+        setTimeout(() => {
+          if (document.visibilityState === "visible") {
+            window.location.href = MARKET_URL;
+            setTimeout(() => window.location.href = PLAY_URL, 600);
+          }
+        }, 700);
+      } else {
+        window.location.href = PLAY_URL;
+      }
+    });
+  </script>
 </body>
 </html>
-
-
