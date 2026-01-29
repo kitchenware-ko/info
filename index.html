@@ -331,6 +331,46 @@ a.btn:visited{
   <div class="toast" id="toast">복사되었습니다</div>
 
   <script>
+      // ===== 연락처 저장 (다운로드 대신 vCard 직접 열기 시도) =====
+    const vcardText =
+`BEGIN:VCARD
+VERSION:3.0
+N:대한상사;(주);;;
+FN:(주)대한상사
+ORG:(주)대한상사
+TEL;TYPE=WORK,VOICE:02-2617-9654
+TEL;TYPE=CELL,VOICE:010-4993-9655
+EMAIL;TYPE=INTERNET:daehan5211@naver.com
+ADR;TYPE=WORK:;;경기도 광명시 사들로 45-6;;;대한민국
+URL:https://www.daehancorporation.co.kr/
+END:VCARD`;
+
+    function openVCard() {
+      try {
+        const blob = new Blob([vcardText], { type: "text/vcard;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+
+        // iOS/Safari는 이 방식이 '연락처 추가' 화면으로 열리는 경우가 많음
+        const a = document.createElement("a");
+        a.href = url;
+        a.rel = "noopener";
+        a.style.display = "none";
+        // download 속성은 일부 앱에서 '다운로드'를 강제하므로 사용하지 않음
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }, 2000);
+      } catch (e) {
+        // 최후 폴백: 파일 링크로 이동
+        window.location.href = "./daehan.vcf";
+      }
+    }
+
+    document.getElementById("saveContact")?.addEventListener("click", openVCard);
+
+
     // ===== 계좌 복사 =====
     const acct = "국민은행 662601-04-035762\n(주)대한상사";
     const toast = document.getElementById("toast");
@@ -427,5 +467,6 @@ a.btn:visited{
   </script>
 </body>
 </html>
+
 
 
