@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="google" content="notranslate" />
+
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="(주)대한상사" />
+<meta property="og:description" content="연락처 저장 · 계좌 복사 · 오시는 길" />
+
+<title>(주)대한상사</title>
+
+<!-- Kakao SDK -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
+  integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
+  crossorigin="anonymous"></script>
+<script>
+  Kakao.init("61e60e2a10a44ac8e3201db62542c480");
+</script>
+
+<style>
+:root{
+  --bg:#ffffff;
+  --text:#0f172a;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 14px 44px rgba(0,0,0,.1);
+  --radius:26px;
+  --btn-radius:18px;
+  --maxw:560px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.wrap{
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  padding:22px;
+}
+.card{
+  width:min(var(--maxw),100%);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  text-align:center;
+}
+.brand img{
+  max-width:160px;
+  width:100%;
+  margin-bottom:6px;
+}
+.brand h1{
+  margin:4px 0 2px;
+  font-size:28px;
+  font-weight:900;
+}
+.brand p{
+  margin:0;
+  font-size:14px;
+  color:var(--muted);
+  font-weight:700;
+}
+.actions{
+  display:grid;
+  gap:12px;
+  margin:18px 0;
+}
+.btn{
+  height:56px;
+  border-radius:var(--btn-radius);
+  border:1px solid var(--border);
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  background:#f9fafb;
+}
+.btn.primary{
+  background:linear-gradient(180deg,#111827,#020617);
+  color:#fff;
+  border:none;
+}
+.info{
+  border-top:1px solid var(--border);
+  padding-top:14px;
+  font-size:14px;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+}
+.row span:first-child{
+  color:var(--muted);
+  font-weight:700;
+}
+.row span:last-child{
+  font-weight:800;
+}
+.footer{
+  margin-top:14px;
+  font-size:11px;
+  color:#9ca3af;
+}
+
+/* 모달 */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  z-index:50;
+}
+.modal.show{display:block}
+.modal-bg{
+  position:absolute;
+  inset:0;
+  background:rgba(2,6,23,.55);
+}
+.modal-box{
+  position:absolute;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%);
+  width:min(var(--maxw),calc(100% - 24px));
+  background:#fff;
+  border-radius:22px;
+  padding:16px;
+}
+.modal-box h3{
+  margin:0 0 12px;
+  font-size:16px;
+  font-weight:900;
+}
+.nav-btns{
+  display:grid;
+  gap:10px;
+}
+.nav-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:#f9fafb;
+  font-weight:900;
+  font-size:15px;
+  cursor:pointer;
+}
+.nav-item:active{transform:translateY(1px)}
+</style>
+</head>
+
+<body>
+<main class="wrap">
+<section class="card">
+
+  <div class="brand">
+    <img src="https://kitchenware-ko.github.io/pay/300x.png" alt="대한상사 로고">
+    <h1>(주)대한상사</h1>
+    <p>업소용의 모든 것</p>
+  </div>
+
+  <div class="actions">
+    <a class="btn primary" href="./daehan.vcf">📇 연락처 저장</a>
+    <button class="btn" id="copyBtn">📋 계좌번호 복사</button>
+    <button class="btn" id="openNav">📍 오시는 길</button>
+  </div>
+
+  <div class="info">
+    <div class="row"><span>전화</span><span>02-2617-9654</span></div>
+    <div class="row"><span>휴대폰</span><span>010-4993-9655</span></div>
+    <div class="row"><span>이메일</span><span>daehan5211@naver.com</span></div>
+    <div class="row"><span>주소</span><span>경기도 광명시 사들로 45-6</span></div>
+  </div>
+
+  <div class="footer">
+    QR 하나로 연락처 저장 · 계좌 복사 · 길 안내
+  </div>
+
+</section>
+</main>
+
+<!-- 오시는 길 모달 -->
+<div class="modal" id="navModal">
+  <div class="modal-bg" id="closeNav"></div>
+  <div class="modal-box">
+    <h3>오시는 길</h3>
+    <div class="nav-btns">
+      <a class="nav-item" href="https://tmap.life/0b2a1271" target="_blank">티맵</a>
+      <button class="nav-item" id="kakaoNaviBtn">카카오내비</button>
+      <a class="nav-item" href="https://naver.me/5L7TWyLK" target="_blank">네이버지도</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 계좌 복사 */
+const acct = "국민은행 662601-04-035762\n(주)대한상사";
+document.getElementById("copyBtn").onclick = () => {
+  navigator.clipboard.writeText(acct);
+  alert("계좌번호가 복사되었습니다");
+};
+
+/* 모달 */
+const modal = document.getElementById("navModal");
+document.getElementById("openNav").onclick = () => modal.classList.add("show");
+document.getElementById("closeNav").onclick = () => modal.classList.remove("show");
+
+/* 카카오내비 실행 (좌표 기반) */
+const KAKAO_DEST = {
+  name: "(주)대한상사",
+  x: 126.842331500265, // 경도
+  y: 37.435743278515,  // 위도
+  coordType: "wgs84",
+};
+
+document.getElementById("kakaoNaviBtn").onclick = () => {
+  Kakao.Navi.start({
+    name: KAKAO_DEST.name,
+    x: KAKAO_DEST.x,
+    y: KAKAO_DEST.y,
+    coordType: KAKAO_DEST.coordType,
+  });
+};
+</script>
+
+</body>
+</html>
