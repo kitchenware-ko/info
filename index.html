@@ -268,6 +268,53 @@
   line-height:1.35;
 }
 
+    /* ✅ 영업 안내: 도형 없이 텍스트만 */
+.hours-block{
+  margin: 6px 0 14px;
+  text-align:center;
+  display:grid;
+  gap:10px;
+}
+
+.hours-line{
+  display:grid;
+  gap:4px;
+}
+
+.hours-label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:900;     /* '영업시간/휴무일'만 볼드 */
+  letter-spacing:-0.01em;
+}
+
+.hours-value{
+  font-size:14px;
+  color:var(--text);
+  font-weight:800;
+}
+
+/* ✅ 영업중 배지(작은 버튼 느낌) */
+.open-badge{
+  justify-self:center;
+  margin-top:2px;
+  padding:7px 12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  font-size:12px;
+  font-weight:900;
+  line-height:1;
+  background:#fff;
+}
+
+.open-badge.open{
+  border-color:#86efac;
+}
+
+.open-badge.closed{
+  border-color:#fecaca;
+}
+
   </style>
 </head>
 
@@ -281,15 +328,21 @@
       <div class="title">(주)대한상사</div>
       <div class="subtitle">도자기,유리,잡화,락앤락,코맥스,업소용 서울·경기 총판</div>
 
-      <div class="hours" aria-label="영업시간 안내"><div class="pill">
-        <span class="label">영업시간</span>
-        <span class="value">오전 8:00 ~ 오후 6:00 / 공휴일은 오후 4:00</span>
-      </div>  
-      <div class="pill">
-        <span class="label">휴무일</span>
-        <span class="value">토요일 · 일요일</span>
-      </div>
-    </div>  
+<!-- ✅ 영업 안내(도형 없이 텍스트만) -->
+<div class="hours-block" aria-label="영업 안내">
+  <div class="hours-line">
+    <span class="hours-label">영업시간</span>
+    <span class="hours-value">오전 8:00 ~ 오후 6:00 / 공휴일은 오후 4:00</span>
+  </div>
+
+  <div class="hours-line">
+    <span class="hours-label">휴무일</span>
+    <span class="hours-value">토요일, 일요일</span>
+  </div>
+
+  <!-- ✅ 영업중/휴무 배지 -->
+  <div class="open-badge" id="openBadge" aria-live="polite"></div>
+</div>
 
 
       <div class="actions">
@@ -502,6 +555,51 @@
         window.location.href = PLAY_URL;
       }
     });
+
+    function getSeoulNowParts(){
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Seoul",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+  return {
+    weekday: map.weekday, // Mon, Tue...
+    hour: Number(map.hour),
+    minute: Number(map.minute),
+  };
+}
+
+function updateOpenBadge(){
+  const el = document.getElementById("openBadge");
+  if(!el) return;
+
+  const { weekday, hour, minute } = getSeoulNowParts();
+  const mins = hour * 60 + minute;
+
+  // ✅ 기본 규칙: 토/일 휴무, 평일 08:00~18:00 영업
+  const isWeekend = (weekday === "Sat" || weekday === "Sun");
+  const isOpen = !isWeekend && mins >= (8*60) && mins < (18*60);
+
+  if(isOpen){
+    el.textContent = "🟢 현재 영업중 (평일 08:00~18:00)";
+    el.classList.remove("closed");
+    el.classList.add("open");
+  }else{
+    const msg = isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외";
+    el.textContent = msg;
+    el.classList.remove("open");
+    el.classList.add("closed");
+  }
+}
+
+updateOpenBadge();
+// 1분마다 갱신(시간 넘어가면 자동 변경)
+setInterval(updateOpenBadge, 60 * 1000);
+
   </script>
 </body>
 </html>
