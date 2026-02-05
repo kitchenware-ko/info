@@ -557,6 +557,107 @@
     });
 
     function getSeoulNowParts(){
+      // ✅ 구글시트(CSV) 주소
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-mpSeQvAml51lwbZ2RSV28hEYeDRspjINfuSGjo4EcCGVbiBuHY00Uzfy9Hk_1M3BIxV3Pia_O-nL/pub?gid=0&single=true&output=csv";
+
+// ✅ 오늘 날짜(서울) YYYY-MM-DD
+function getSeoulYYYYMMDD(){
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone:"Asia/Seoul",
+    year:"numeric", month:"2-digit", day:"2-digit"
+  }).format(new Date());
+}
+
+// ✅ "08:00" -> 분
+function hhmmToMins(hhmm){
+  const [h,m] = (hhmm||"").split(":").map(Number);
+  if(Number.isFinite(h) && Number.isFinite(m)) return h*60 + m;
+  return null;
+}
+
+// ✅ 간단 CSV 파서(따옴표 포함)
+function parseCSV(text){
+  const rows = [];
+  let row = [], cur = "", inQ = false;
+
+  for(let i=0;i<text.length;i++){
+    const ch = text[i];
+    const next = text[i+1];
+
+    if(ch === '"' && next === '"'){ cur += '"'; i++; continue; }
+    if(ch === '"'){ inQ = !inQ; continue; }
+
+    if(!inQ && ch === ","){ row.push(cur); cur=""; continue; }
+    if(!inQ && (ch === "\n" || ch === "\r")){
+      if(ch === "\r" && next === "\n") i++;
+      row.push(cur); rows.push(row);
+      row=[]; cur="";
+      continue;
+    }
+    cur += ch;
+  }
+  if(cur.length || row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+
+// ✅ 시트에서 overrides 읽기
+async function fetchOverridesFromSheet(){
+  try{
+    const url = SHEET_CSV_URL + "&ts=" + Date.now(); // 캐시 방지
+    const res = await fetch(url, { cache:"no-store" });
+    if(!res.ok) return [];
+
+    const csv = await res.text();
+    const rows = parseCSV(csv);
+    if(rows.length < 2) return [];
+
+    const headers = rows[0].map(h => (h||"").trim().toLowerCase());
+    const idx = (name) => headers.indexOf(name);
+
+    const iDate = idx("date");
+    const iStatus = idx("status");
+    const iOpen = idx("open");
+    const iClose = idx("close");
+    const iNote = idx("note");
+    const iEnabled = idx("enabled");
+
+    const out = [];
+    for(let r=1; r<rows.length; r++){
+      const row = rows[r];
+
+      const enabledRaw = iEnabled>=0 ? String(row[iEnabled]||"").trim() : "TRUE";
+      const enabled = enabledRaw.toUpperCase();
+      if(enabled !== "TRUE") continue;
+
+      const date = iDate>=0 ? String(row[iDate]||"").trim() : "";
+      const status = iStatus>=0 ? String(row[iStatus]||"").trim().toLowerCase() : "";
+      if(!date || !status) continue;
+
+      out.push({
+        date,
+        status,                       // open / closed / short
+        open: iOpen>=0 ? String(row[iOpen]||"").trim() : "",
+        close: iClose>=0 ? String(row[iClose]||"").trim() : "",
+        note: iNote>=0 ? String(row[iNote]||"").trim() : ""
+      });
+    }
+    return out;
+  }catch(e){
+    return [];
+  }
+}
+
+// ✅ 1분 캐시
+let _ovCache = null;
+let _ovFetchedAt = 0;
+
+async function getOverridesCached(){
+  const now = Date.now();
+  if(_ovCache && (now - _ovFetchedAt) < 60000) return _ovCache;
+  _ovCache = await fetchOverridesFromSheet();
+  _ovFetchedAt = now;
+  return _ovCache;
+}
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Seoul",
     weekday: "short",
@@ -574,25 +675,55 @@
 }
 
 function updateOpenBadge(){
+  async function updateOpenBadge(){
   const el = document.getElementById("openBadge");
   if(!el) return;
 
   const { weekday, hour, minute } = getSeoulNowParts();
-  const mins = hour * 60 + minute;
+  const mins = hour*60 + minute;
 
   // ✅ 기본 규칙: 토/일 휴무, 평일 08:00~18:00 영업
   const isWeekend = (weekday === "Sat" || weekday === "Sun");
-  const isOpen = !isWeekend && mins >= (8*60) && mins < (18*60);
+  let isOpen = !isWeekend && mins >= (8*60) && mins < (18*60);
 
+  let msg;
   if(isOpen){
-    el.textContent = "🟢 현재 영업중 (평일 08:00~18:00)";
-    el.classList.remove("closed");
-    el.classList.add("open");
+    msg = "🟢 현재 영업중 (평일 08:00~18:00)";
   }else{
-    const msg = isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외";
-    el.textContent = msg;
-    el.classList.remove("open");
-    el.classList.add("closed");
+    msg = isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외";
+  }
+
+  // ✅ 구글 시트 예외 적용 (있으면 우선)
+  const today = getSeoulYYYYMMDD();
+  const overrides = await getOverridesCached();
+  const ov = overrides.find(o => o.date === today);
+
+  if(ov){
+    if(ov.status === "closed"){
+      isOpen = false;
+      msg = `🔴 오늘은 휴무${ov.note ? " · " + ov.note : ""}`;
+    } else if(ov.status === "open"){
+      isOpen = true;
+      msg = `🟢 현재 영업중${ov.note ? " · " + ov.note : ""}`;
+    } else if(ov.status === "short"){
+      const o = hhmmToMins(ov.open);
+      const c = hhmmToMins(ov.close);
+
+      if(o != null && c != null){
+        isOpen = (mins >= o && mins < c);
+        msg = isOpen
+          ? `🟢 현재 영업중 (${ov.open}~${ov.close})${ov.note ? " · " + ov.note : ""}`
+          : `🔴 영업시간 외 (${ov.open}~${ov.close})${ov.note ? " · " + ov.note : ""}`;
+      } else {
+        isOpen = false;
+        msg = `🔴 운영정보 확인 필요${ov.note ? " · " + ov.note : ""}`;
+      }
+    }
+
+  el.textContent = msg;
+  el.classList.toggle("open", isOpen);
+  el.classList.toggle("closed", !isOpen);
+}
   }
 }
 
