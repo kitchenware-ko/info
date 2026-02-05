@@ -341,7 +341,7 @@
   </div>
 
   <!-- ✅ 영업중/휴무 배지 -->
-  <div class="open-badge" id="openBadge" aria-live="polite"></div>
+  <div class="open-badge" id="openBadge" aria-live="polite">상태 확인중…</div>
 </div>
 
 
@@ -675,30 +675,43 @@ async function getOverridesCached(){
 }
 
 function updateOpenBadge(){
-  async function updateOpenBadge(){
+ async function updateOpenBadge(){
   const el = document.getElementById("openBadge");
   if(!el) return;
 
   const { weekday, hour, minute } = getSeoulNowParts();
   const mins = hour*60 + minute;
 
-  // ✅ 기본 규칙: 토/일 휴무, 평일 08:00~18:00 영업
+  // ✅ 기본 규칙(즉시 표시)
   const isWeekend = (weekday === "Sat" || weekday === "Sun");
   let isOpen = !isWeekend && mins >= (8*60) && mins < (18*60);
 
-  let msg;
-  if(isOpen){
-    msg = "🟢 현재 영업중 (평일 08:00~18:00)";
-  }else{
-    msg = isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외";
-  }
+  let msg = isOpen
+    ? "🟢 현재 영업중 (평일 08:00~18:00)"
+    : (isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외");
 
-  // ✅ 구글 시트 예외 적용 (있으면 우선)
+  // ✅ 먼저 그려주기(중요!)
+  el.textContent = msg;
+  el.classList.toggle("open", isOpen);
+  el.classList.toggle("closed", !isOpen);
+
+  // ✅ 이후에 시트 예외가 있으면 덮어쓰기 (실패해도 기본은 이미 보여짐)
   const today = getSeoulYYYYMMDD();
-  const overrides = await getOverridesCached();
-  const ov = overrides.find(o => o.date === today);
 
-  if(ov){
+  try{
+    // 3초 타임아웃(인앱/아이폰에서 fetch가 늘어지는 문제 방지)
+    const controller = new AbortController();
+    const t = setTimeout(()=>controller.abort(), 3000);
+
+    // fetchOverridesFromSheet() 내부 fetch를 여기서 직접 처리하는 게 가장 안정적이지만,
+    // 지금 구조를 유지하려면 캐시 함수만 호출해도 OK
+    const overrides = await getOverridesCached();
+
+    clearTimeout(t);
+
+    const ov = overrides.find(o => o.date === today);
+    if(!ov) return;
+
     if(ov.status === "closed"){
       isOpen = false;
       msg = `🔴 오늘은 휴무${ov.note ? " · " + ov.note : ""}`;
@@ -720,6 +733,16 @@ function updateOpenBadge(){
       }
     }
 
+    // ✅ 덮어쓰기
+    el.textContent = msg;
+    el.classList.toggle("open", isOpen);
+    el.classList.toggle("closed", !isOpen);
+
+  }catch(e){
+    // 시트 로딩 실패해도 기본 배지는 이미 표시된 상태라 OK
+  }
+}
+ 
   el.textContent = msg;
   el.classList.toggle("open", isOpen);
   el.classList.toggle("closed", !isOpen);
