@@ -518,7 +518,9 @@
     // =========================
     // ✅ 영업중/휴무 배지 + 구글시트 예외(빠르게)
     // =========================
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-mpSeQvAml51lwbZ2RSV28hEYeDRspjINfuSGjo4EcCGVbiBuHY00Uzfy9Hk_1M3BIxV3Pia_O-nL/pub?gid=0&single=true&output=csv";
+ const SHEET_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-mpSeQvAml51lwbZ2RSV28hEYeDRspjINfuSGjo4EcCGVbiBuHY00Uzfy9Hk_1M3BIxV3Pia_O-nL/gviz/tq?tqx=out:csv&gid=0";
+
 
     function getSeoulNowParts(){
       const parts = new Intl.DateTimeFormat("en-US", {
