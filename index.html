@@ -516,191 +516,151 @@
     });
 
     // =========================
-    // ✅ 영업중/휴무 배지 + 구글시트 예외(빠르게)
-    // =========================
- const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-mpSeQvAml51lwbZ2RSV28hEYeDRspjINfuSGjo4EcCGVbiBuHY00Uzfy9Hk_1M3BIxV3Pia_O-nL/gviz/tq?tqx=out:csv&gid=0";
+   // =========================
+// ✅ 영업중/휴무 배지 + 구글시트 예외 (Apps Script JSONP)
+// ✅ CORS/리다이렉트 문제 없이 iOS/카톡 인앱에서도 안정적으로 동작
+// =========================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzL7CJ5K0aLyzzI1gq9dj5i-sIaHNfdxEwIw9zLfRCsrnb2yV-kVnAWYIdHUJLQWVj1xQ/exec";
 
+// localStorage 캐시(체감 속도 개선)
+const OV_CACHE_KEY = "daehan_override_cache_v2";
 
-    function getSeoulNowParts(){
-      const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "Asia/Seoul",
-        weekday: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).formatToParts(new Date());
+function loadOverrideCache(){
+  try { return JSON.parse(localStorage.getItem(OV_CACHE_KEY) || "null"); }
+  catch(e){ return null; }
+}
+function saveOverrideCache(obj){
+  try { localStorage.setItem(OV_CACHE_KEY, JSON.stringify(obj)); } catch(e){}
+}
 
-      const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
-      return {
-        weekday: map.weekday,
-        hour: Number(map.hour),
-        minute: Number(map.minute),
-      };
+// JSONP 로드 (CORS 우회)
+function loadOverridesJSONP(timeoutMs = 1800){
+  return new Promise((resolve) => {
+    const cbName = "__ov_cb_" + Math.random().toString(36).slice(2);
+    const script = document.createElement("script");
+
+    const timer = setTimeout(() => cleanup([]), timeoutMs);
+
+    function cleanup(result){
+      clearTimeout(timer);
+      try { delete window[cbName]; } catch(e){ window[cbName] = undefined; }
+      if(script && script.parentNode) script.parentNode.removeChild(script);
+      resolve(Array.isArray(result) ? result : []);
     }
 
-    function getSeoulYYYYMMDD(){
-      return new Intl.DateTimeFormat("en-CA", {
-        timeZone:"Asia/Seoul",
-        year:"numeric", month:"2-digit", day:"2-digit"
-      }).format(new Date());
+    window[cbName] = (data) => cleanup(data);
+
+    // cache bust
+    script.src = SCRIPT_URL + "?callback=" + encodeURIComponent(cbName) + "&ts=" + Date.now();
+    script.onerror = () => cleanup([]);
+    document.head.appendChild(script);
+  });
+}
+
+function getSeoulNowParts(){
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Seoul",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+  return {
+    weekday: map.weekday,
+    hour: Number(map.hour),
+    minute: Number(map.minute),
+  };
+}
+
+function getSeoulYYYYMMDD(){
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone:"Asia/Seoul",
+    year:"numeric", month:"2-digit", day:"2-digit"
+  }).format(new Date());
+}
+
+function hhmmToMins(hhmm){
+  const [h,m] = (hhmm||"").split(":").map(Number);
+  if(Number.isFinite(h) && Number.isFinite(m)) return h*60 + m;
+  return null;
+}
+
+function applyBadge(isOpen, msg){
+  const el = document.getElementById("openBadge");
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.toggle("open", isOpen);
+  el.classList.toggle("closed", !isOpen);
+}
+
+function applyOverride(ov){
+  const { hour, minute } = getSeoulNowParts();
+  const mins = hour*60 + minute;
+
+  if(ov.status === "closed"){
+    applyBadge(false, `🔴 오늘은 휴무${ov.note ? " · " + ov.note : ""}`);
+    return;
+  }
+  if(ov.status === "open"){
+    applyBadge(true, `🟢 현재 영업중${ov.note ? " · " + ov.note : ""}`);
+    return;
+  }
+  if(ov.status === "short"){
+    const o = hhmmToMins(ov.open);
+    const c = hhmmToMins(ov.close);
+    if(o != null && c != null){
+      const isOpen = mins >= o && mins < c;
+      const msg = isOpen
+        ? `🟢 현재 영업중 (${ov.open}~${ov.close})${ov.note ? " · " + ov.note : ""}`
+        : `🔴 영업시간 외 (${ov.open}~${ov.close})${ov.note ? " · " + ov.note : ""}`;
+      applyBadge(isOpen, msg);
+    } else {
+      applyBadge(false, `🔴 운영정보 확인 필요${ov.note ? " · " + ov.note : ""}`);
     }
+  }
+}
 
-    function hhmmToMins(hhmm){
-      const [h,m] = (hhmm||"").split(":").map(Number);
-      if(Number.isFinite(h) && Number.isFinite(m)) return h*60 + m;
-      return null;
-    }
+async function updateOpenBadge(){
+  const { weekday, hour, minute } = getSeoulNowParts();
+  const mins = hour*60 + minute;
 
-    function parseCSV(text){
-      const rows = [];
-      let row = [], cur = "", inQ = false;
+  // 1) 기본 규칙 즉시 표시
+  const isWeekend = (weekday === "Sat" || weekday === "Sun");
+  const baseOpen = !isWeekend && mins >= (8*60) && mins < (18*60);
+  const baseMsg = baseOpen
+    ? "🟢 현재 영업중 (평일 08:00~18:00)"
+    : (isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외");
+  applyBadge(baseOpen, baseMsg);
 
-      for(let i=0;i<text.length;i++){
-        const ch = text[i];
-        const next = text[i+1];
+  const today = getSeoulYYYYMMDD();
 
-        if(ch === '"' && next === '"'){ cur += '"'; i++; continue; }
-        if(ch === '"'){ inQ = !inQ; continue; }
+  // 2) 캐시가 있으면 즉시 덮어쓰기
+  const cached = loadOverrideCache();
+  if(cached && cached.date === today && cached.ov){
+    applyOverride(cached.ov);
+  }
 
-        if(!inQ && ch === ","){ row.push(cur); cur=""; continue; }
-        if(!inQ && (ch === "\n" || ch === "\r")){
-          if(ch === "\r" && next === "\n") i++;
-          row.push(cur); rows.push(row);
-          row=[]; cur="";
-          continue;
-        }
-        cur += ch;
-      }
-      if(cur.length || row.length){ row.push(cur); rows.push(row); }
-      return rows;
-    }
+  // 3) JSONP로 시트 예외 로드 (실패해도 기본 배지는 유지)
+  const overrides = await loadOverridesJSONP(1800);
+  const ov = overrides.find(o => String(o.date||"").trim() === today);
 
-    // localStorage 캐시(체감 속도 개선)
-    const OV_CACHE_KEY = "daehan_override_cache_v1";
-    function loadOverrideCache(){
-      try { return JSON.parse(localStorage.getItem(OV_CACHE_KEY) || "null"); }
-      catch(e){ return null; }
-    }
-    function saveOverrideCache(obj){
-      try { localStorage.setItem(OV_CACHE_KEY, JSON.stringify(obj)); } catch(e){}
-    }
+  if(ov){
+    // status는 소문자로 통일
+    ov.status = String(ov.status||"").trim().toLowerCase();
+    ov.open = String(ov.open||"").trim();
+    ov.close = String(ov.close||"").trim();
+    ov.note = String(ov.note||"").trim();
 
-    async function fetchOverridesFromSheetWithTimeout(ms){
-      const controller = new AbortController();
-      const t = setTimeout(()=>controller.abort(), ms);
+    applyOverride(ov);
+    saveOverrideCache({ date: today, ov, savedAt: Date.now() });
+  }
+}
 
-      try{
-        const url = SHEET_CSV_URL + "&ts=" + Date.now();
-        const res = await fetch(url, { cache:"no-store", signal: controller.signal });
-        if(!res.ok) return [];
+updateOpenBadge();
+setInterval(updateOpenBadge, 60 * 1000);
 
-        const csv = await res.text();
-        const rows = parseCSV(csv);
-        if(rows.length < 2) return [];
-
-        const headers = rows[0].map(h => (h||"").trim().toLowerCase());
-        const idx = (name) => headers.indexOf(name);
-
-        const iDate = idx("date");
-        const iStatus = idx("status");
-        const iOpen = idx("open");
-        const iClose = idx("close");
-        const iNote = idx("note");
-        const iEnabled = idx("enabled");
-
-        const out = [];
-        for(let r=1; r<rows.length; r++){
-          const row = rows[r];
-          const enabledRaw = iEnabled>=0 ? String(row[iEnabled]||"").trim() : "TRUE";
-          if(enabledRaw.toUpperCase() !== "TRUE") continue;
-
-          const date = iDate>=0 ? String(row[iDate]||"").trim() : "";
-          const status = iStatus>=0 ? String(row[iStatus]||"").trim().toLowerCase() : "";
-          if(!date || !status) continue;
-
-          out.push({
-            date,
-            status, // open / closed / short
-            open: iOpen>=0 ? String(row[iOpen]||"").trim() : "",
-            close: iClose>=0 ? String(row[iClose]||"").trim() : "",
-            note: iNote>=0 ? String(row[iNote]||"").trim() : ""
-          });
-        }
-        return out;
-      } catch(e){
-        return [];
-      } finally {
-        clearTimeout(t);
-      }
-    }
-
-    function applyBadge(isOpen, msg){
-      const el = document.getElementById("openBadge");
-      if(!el) return;
-      el.textContent = msg;
-      el.classList.toggle("open", isOpen);
-      el.classList.toggle("closed", !isOpen);
-    }
-
-    function applyOverride(ov){
-      const { hour, minute } = getSeoulNowParts();
-      const mins = hour*60 + minute;
-
-      if(ov.status === "closed"){
-        applyBadge(false, `🔴 오늘은 휴무${ov.note ? " · " + ov.note : ""}`);
-        return;
-      }
-      if(ov.status === "open"){
-        applyBadge(true, `🟢 현재 영업중${ov.note ? " · " + ov.note : ""}`);
-        return;
-      }
-      if(ov.status === "short"){
-        const o = hhmmToMins(ov.open);
-        const c = hhmmToMins(ov.close);
-        if(o != null && c != null){
-          const isOpen = mins >= o && mins < c;
-          const msg = isOpen
-            ? `🟢 현재 영업중 (${ov.open}~${ov.close})${ov.note ? " · " + ov.note : ""}`
-            : `🔴 영업시간 외 (${ov.open}~${ov.close})${ov.note ? " · " + ov.note : ""}`;
-          applyBadge(isOpen, msg);
-        } else {
-          applyBadge(false, `🔴 운영정보 확인 필요${ov.note ? " · " + ov.note : ""}`);
-        }
-      }
-    }
-
-    async function updateOpenBadge(){
-      const { weekday, hour, minute } = getSeoulNowParts();
-      const mins = hour*60 + minute;
-
-      // 1) 기본 규칙은 즉시 표시
-      const isWeekend = (weekday === "Sat" || weekday === "Sun");
-      const baseOpen = !isWeekend && mins >= (8*60) && mins < (18*60);
-      const baseMsg = baseOpen
-        ? "🟢 현재 영업중 (평일 08:00~18:00)"
-        : (isWeekend ? "🔴 오늘은 휴무 (토·일)" : "🔴 영업시간 외");
-      applyBadge(baseOpen, baseMsg);
-
-      const today = getSeoulYYYYMMDD();
-
-      // 2) 캐시가 있으면 즉시 덮어쓰기(체감 개선)
-      const cached = loadOverrideCache();
-      if(cached && cached.date === today && cached.ov){
-        applyOverride(cached.ov);
-      }
-
-      // 3) 시트는 3초까지만 기다리고, 성공하면 캐시 갱신
-      const overrides = await fetchOverridesFromSheetWithTimeout(3000);
-      const ov = overrides.find(o => o.date === today);
-      if(ov){
-        applyOverride(ov);
-        saveOverrideCache({ date: today, ov, savedAt: Date.now() });
-      }
-    }
-
-    updateOpenBadge();
-    setInterval(updateOpenBadge, 60 * 1000);
   </script>
 </body>
 </html>
